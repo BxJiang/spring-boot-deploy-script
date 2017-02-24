@@ -23,7 +23,7 @@ LAUNCH_SCRIPT="${DEPLOY_DIR}/${APP_NAME}.sh"
 TEMPLATE_SCRIPT="${HOME}/script/app.sh"
 
 # Build with gradle
-gradle build
+gradle build || { echo 'ERROR: gradle build task failed'; exit 1; }
 
 # Settle the deploy dir if not settled
 if [[ -d ${DEPLOY_DIR} ]]; then
@@ -41,11 +41,14 @@ else
   fi
 fi
 
+# Stop the app
+${LAUNCH_SCRIPT} stop
+
 # Move jar file to deploy directory
 cp ${JARFILE} ${DEPLOY_DIR}/ && echo 'INFO: jar file settled' || { echo 'ERROR: unable to settle jar file'; exit 1; }
 
 # Start the app
-${LAUNCH_SCRIPT} restart
+${LAUNCH_SCRIPT} start || { echo 'ERROR: unable to start the app'; exit 1; }
 
 # Tail the log
 tail -fn 800 ${DEPLOY_DIR}/logs/application.log || echo "try 'tail -fn 800 ${DEPLOY_DIR}/logs/application.log' by yourself"

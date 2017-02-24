@@ -33,23 +33,15 @@ MODE=service
 [[ -z ${APP_NAME} ]] && { echo "FATAL: 'APP_NAME' not set"; exit 1; }
 [[ -z ${VERSION} ]] && { echo "FATAL: 'VERSION' not set"; exit 1; }
 
-# Initialize variables that cannot be provided by a .conf file
-WORKING_DIR="$(pwd)"
 # shellcheck disable=SC2153
 [[ -n "$JARFILE" ]] && jarfile="$JARFILE"
 [[ -n "$APP_NAME" ]] && identity="$APP_NAME"
 
-# Follow symlinks to find the real jar and detect init.d script, or the jarfile is here 
+# Find the jar file in the same directory with this script
 cd "$(dirname "$0")" || exit 1
-[[ -z "$jarfile" ]] && jarfile=$(pwd)/$(basename "$0") || jarfile=$(pwd)/${jarfile}
-while [[ -L "$jarfile" ]]; do
-  [[ "$jarfile" =~ init\.d ]] && init_script=$(basename "$jarfile")
-  jarfile=$(readlink "$jarfile")
-  cd "$(dirname "$jarfile")" || exit 1
-  jarfile=$(pwd)/$(basename "$jarfile")
-done
-jarfolder="$( (cd "$(dirname "$jarfile")" && pwd -P) )"
-cd "$WORKING_DIR" || exit 1
+[[ -z "$jarfile" ]] && { echo 'FATAL: JARFILE not defined'; exit 1; } || jarfile=$(pwd)/${jarfile}
+[[ -f "$jarfile" ]] || { echo "FATAL: JARFILE not found in $(pwd)"; exit 1; }
+jarfolder="$(pwd)"
 
 # Source any config file
 configfile="$(basename "${jarfile%.*}.conf")"
