@@ -51,7 +51,7 @@ cp ${JARFILE} ${DEPLOY_DIR}/ && echo 'INFO: jar file settled' || { echo 'ERROR: 
 ${LAUNCH_SCRIPT} start || { echo 'ERROR: unable to start the app'; exit 1; }
 
 # Check if the app is running
-${LAUNCH_SCRIPT} status || { echo 'ERROR: app not running, and I do not know why'; exit 1; }
+${LAUNCH_SCRIPT} status || { echo "ERROR: app not running, try 'tail -fn 800 /tmp/${APP_NAME}.log' for more info"; exit 1; }
 
 # Tail the log
 tail -fn 800 ${DEPLOY_DIR}/logs/application.log || echo "try 'tail -fn 800 ${DEPLOY_DIR}/logs/application.log' by yourself"
