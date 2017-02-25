@@ -25,7 +25,7 @@
 # IMPORTANT: CUSTOMIZE YOUR APP HERE!!!!!!
 APP_NAME=
 VERSION=
-JAVA_OPTS='-Dspring.profiles.active=online'
+JAVA_OPTS='-Dspring.profiles.active=online -Xms=1024m -Xmx=1024'
 JARFILE=${APP_NAME}-${VERSION}.jar
 MODE=service
 
