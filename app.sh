@@ -40,7 +40,6 @@ MODE=service
 # Find the jar file in the same directory with this script
 cd "$(dirname "$0")" || exit 1
 [[ -z "$jarfile" ]] && { echo 'FATAL: JARFILE not defined'; exit 1; } || jarfile=$(pwd)/${jarfile}
-[[ -f "$jarfile" ]] || { echo "FATAL: JARFILE not found in $(pwd)"; exit 1; }
 jarfolder="$(pwd)"
 
 # Source any config file
@@ -149,6 +148,7 @@ start() {
 
 do_start() {
   working_dir=$(dirname "$jarfile")
+  [[ -f "$jarfile" ]] || { echo "FATAL: JARFILE not found in $(pwd)"; exit 1; }
   pushd "$working_dir" > /dev/null
   mkdir -p "$PID_FOLDER" &> /dev/null
   if [[ -n "$run_user" ]]; then
