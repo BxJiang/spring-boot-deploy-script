@@ -175,9 +175,8 @@ do_start() {
     pid=$(cat "$pid_file")
   else
     checkPermissions || return $?
-    "$javaexe" "${arguments[@]}" >> "$log_file" 2>&1 &
+    "nohup $javaexe" "${arguments[@]}" >> "$log_file" 2>&1 &
     pid=$!
-    disown $pid
     echo "$pid" > "$pid_file"
   fi
   [[ -z $pid ]] && { echoRed "Failed to start"; return 1; }
