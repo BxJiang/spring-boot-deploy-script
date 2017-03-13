@@ -25,7 +25,7 @@
 # IMPORTANT: CUSTOMIZE YOUR APP HERE!!!!!!
 APP_NAME=
 VERSION=
-JAVA_OPTS='-Xms1024m -Xmx1024m -Dspring.profiles.active=online'
+JAVA_OPTS='-Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError -Dspring.profiles.active=online'
 JARFILE=${APP_NAME}-${VERSION}.jar
 MODE=service
 

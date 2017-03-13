@@ -31,9 +31,14 @@ if [[ -d ${DEPLOY_DIR} ]]; then
 else
   mkdir -p ${DEPLOY_DIR} && echo 'INFO: deploy dir settled' \
     || { echo 'ERROR: unable to settle deploy dir'; exit 1; }
+fi
+
+if [[ -f ${LAUNCH_SCRIPT} ]]; then
+  echo 'INFO: launch script found'
+else
   if [[ -x ${TEMPLATE_SCRIPT} ]]; then
     sed -e "s/APP_NAME=/APP_NAME=${APP_NAME}/g" -e "s/VERSION=/VERSION=${VERSION}/g" ${TEMPLATE_SCRIPT} > ${LAUNCH_SCRIPT} \
-      && echo 'INFO: launch script ready' || { echo 'ERROR: unable to generate launch script'; exit 1; }
+      && echo 'INFO: launch script generated' || { echo 'ERROR: unable to generate launch script'; exit 1; }
     chmod +x ${LAUNCH_SCRIPT}
   else
     echo "ERROR: template script 'app.sh' not exist or not executable"
