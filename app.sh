@@ -175,7 +175,7 @@ do_start() {
     pid=$(cat "$pid_file")
   else
     checkPermissions || return $?
-    "nohup $javaexe" "${arguments[@]}" >> "$log_file" 2>&1 &
+    nohup "$javaexe" "${arguments[@]}" >> "$log_file" 2>&1 &
     pid=$!
     echo "$pid" > "$pid_file"
   fi
