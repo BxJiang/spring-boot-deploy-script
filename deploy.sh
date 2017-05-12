@@ -25,6 +25,17 @@ TEMPLATE_SCRIPT="${HOME}/script/app.sh"
 # Build with gradle
 gradle build || { echo 'ERROR: gradle build task failed'; exit 1; }
 
+# Clean the deploy dir if upgrade is defined
+COMMAND=$1
+case $COMMAND in
+  -u)
+    rm -rf ${LAUNCH_SCRIPT}
+    shift
+    ;;
+  *)
+    ;;
+esac
+
 # Settle the deploy dir if not settled
 if [[ -d ${DEPLOY_DIR} ]]; then
   echo 'INFO: deploy dir found' 
@@ -33,17 +44,13 @@ else
     || { echo 'ERROR: unable to settle deploy dir'; exit 1; }
 fi
 
-if [[ -f ${LAUNCH_SCRIPT} ]]; then
-  echo 'INFO: launch script found'
+if [[ -x ${TEMPLATE_SCRIPT} ]]; then
+  sed -e "s/APP_NAME=/APP_NAME=${APP_NAME}/g" -e "s/VERSION=/VERSION=${VERSION}/g" ${TEMPLATE_SCRIPT} > ${LAUNCH_SCRIPT} \
+    && echo 'INFO: launch script generated' || { echo 'ERROR: unable to generate launch script'; exit 1; }
+  chmod +x ${LAUNCH_SCRIPT}
 else
-  if [[ -x ${TEMPLATE_SCRIPT} ]]; then
-    sed -e "s/APP_NAME=/APP_NAME=${APP_NAME}/g" -e "s/VERSION=/VERSION=${VERSION}/g" ${TEMPLATE_SCRIPT} > ${LAUNCH_SCRIPT} \
-      && echo 'INFO: launch script generated' || { echo 'ERROR: unable to generate launch script'; exit 1; }
-    chmod +x ${LAUNCH_SCRIPT}
-  else
-    echo "ERROR: template script 'app.sh' not exist or not executable"
-    exit 1
-  fi
+  echo "ERROR: template script 'app.sh' not exist or not executable"
+  exit 1
 fi
 
 # Stop the app
